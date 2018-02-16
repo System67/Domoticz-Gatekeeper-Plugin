@@ -1,7 +1,13 @@
 # Domoticz Woonveilig / eGardia Gatekeeper
 # Works with GATE-01, GATE-2 and GATE03
 # Author: System67 (Carlo)
-# 
+#
+# Based on code from: 
+#
+# https://github.com/StuffNL/domoticz-woonveilig
+# https://github.com/jeroenterheerdt/python-egardia
+#
+#
 """
 <plugin key="GateKeeper" name="Woonveilig eGardia GateKeeper" version="1.0.0" wikilink="" externallink="">
     <params>
