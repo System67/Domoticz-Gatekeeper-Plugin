@@ -17,4 +17,4 @@ Todo:
 -	Let the plugin set the state of the Gate
 
 
-Please note that the plugin is absolute without ANY warranty, and that this plugin is my first programming in Python. 
+Please note that the plugin is absolute without ANY warranty, and that this plugin is my first code written in Python. 
