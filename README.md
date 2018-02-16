@@ -19,7 +19,10 @@ Todo:
 
 Please note that the plugin is absolute without ANY warranty, and that this plugin is my first code written in Python. 
 
+
+
 Installation:
 
 cd domoticz/plugins
+
 git clone https://github.com/System67/GateKeeper.git
