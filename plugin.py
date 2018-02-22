@@ -9,7 +9,7 @@
 #
 #
 """
-<plugin key="GateKeeper" name="Woonveilig eGardia GateKeeper" version="1.0.0" author="System67 (Carlo)" wikilink="" externallink="">
+<plugin key="GateKeeper" name="Woonveilig eGardia GateKeeper" version="1.1.0" author="System67 (Carlo)" wikilink="" externallink="">
     <params>
         <param field="Address" label="IP Address" width="200px" required="true" default=""/>
         <param field="Username" label="Username" width="150px" required="true" default=""/>
