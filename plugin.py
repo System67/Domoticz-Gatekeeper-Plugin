@@ -51,11 +51,12 @@ class BasePlugin:
         #self.var = 123
         return
 
-    def getItDone(self):
-        Domoticz.Debug("GetItDone Called")
-
     def onStart(self):
         Domoticz.Debug("onStart called")
+        if Parameters["Mode6"] == "Debug":
+            Domoticz.Log("Debugging ON")
+            Domoticz.Debugging(1)        
+            DumpConfigToLog()
         
         # Set differences between gates in Constants
         if Parameters["Mode1"] == "GATE-01":
@@ -69,9 +70,24 @@ class BasePlugin:
         
         self._Credentials = base64.b64encode("{0}:{1}".format(Parameters["Username"], Parameters["Password"]).encode()).decode("ascii")
         self._conn = http.client.HTTPConnection(Parameters["Address"],port=Parameters["Port"])
+        Domoticz.Debug("Connecting to GATE")
+        for i in range(3):
+            try:
+                self._conn.request("GET", self._SensorURL, headers={'Authorization': "Basic " + self._Credentials})
+                r1 = self._conn.getresponse()
+            except: # Catch url problems
+                Domoticz.Log("ERROR --> Connection problems check URL and port")
+                return
+            
+            if(r1.status == 200):
+                Domoticz.Debug("Valid connection data returned")
+                break
+        else: # Catch security errors
+            Domoticz.Log("ERROR --> Connection Error : " +str(r1.status) +" Reason: " + r1.reason )
+            Domoticz.Log("ERROR --> Please check username and/or password")
+            return
         
-        self._conn.request("GET", self._SensorURL, headers={'Authorization': "Basic " + self._Credentials})
-        r1 = self._conn.getresponse()
+        
         
         results = r1.read().decode("utf-8", "ignore")
         Sensors = getSensors(Parameters['Mode1'],results)
@@ -88,7 +104,7 @@ class BasePlugin:
                     Domoticz.Device(Name=SensorData["name"], Unit=99, TypeName="Selector Switch", Switchtype=18, Image=13, Options=Options).Create()
                 if (SensorData['type'] in self._TypeIR): 
                     Domoticz.Device(Name=SensorData["name"], TypeName="Switch", Switchtype=8, Unit=int(SensorData[self._NrKey])).Create()
-    
+        
         
 
     def onStop(self):
@@ -112,9 +128,25 @@ class BasePlugin:
 
     def onHeartbeat(self):
         Domoticz.Debug("onHeartbeat called")
-        self._conn.request("GET", self._SensorURL, headers={'Authorization': "Basic " + self._Credentials})
-        r1 = self._conn.getresponse()
-        Domoticz.Debug(str(r1.status) +' : '+ r1.reason)
+        #self._conn.request("GET", self._SensorURL, headers={'Authorization': "Basic " + self._Credentials})
+
+        for i in range(3):
+            try:
+                self._conn.request("GET", self._SensorURL, headers={'Authorization': "Basic " + self._Credentials})
+                r1 = self._conn.getresponse()
+            except:
+                Domoticz.Log("ERROR --> Connection problems check URL and port")
+                return
+            
+            if(r1.status == 200):
+                Domoticz.Debug("Valid connection data returned")
+                break
+        else:
+            Domoticz.Log("ERROR --> Connection Error : " +str(r1.status) +" Reason: " + r1.reason )
+            Domoticz.Log("ERROR --> Please check username and/or password")
+            return        
+        
+        
         results = r1.read().decode("utf-8", "ignore")
         Sensors = getSensors(Parameters['Mode1'],results)
         
@@ -149,9 +181,7 @@ class BasePlugin:
 
         UpdateDevice(Unit=99, nValue = DomoState, sValue= str(DomoState))
 
-        
-        
-        
+       
         
 
 global _plugin
